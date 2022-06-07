@@ -183,7 +183,7 @@ python3 -m pip install -r gshell/requirements.txt
 Add the tool to the `$PATH` environment variable:
 
 ```sh
-sudo cp -r gshell /usr/bin
+sudo ln -s $(pwd)/gshell/gshell.py /usr/local/bin/gshell.py && chmod +x /usr/local/bin/gshell.py
 ```
 
 Execute the tool:
@@ -237,7 +237,7 @@ gshell.py
 
 # Contact & Contributing
 
-If you find any issues then you can open an issue, contact me on [twitter]() or [discord (preferred)](). 
+If you find any issues then you can open an issue, contact me on [twitter](https://twitter.com/nozerobit) or [discord (preferred)](https://discord.gg/jChyJgGs7Z). 
 
 If you want to contribute then please feel free.
 
@@ -245,7 +245,7 @@ Any feedback is appreciated.
 
 # ToDo
 
-The evasion folder is for the version 2.0 which should have the following:
+For the version 2.0 which should have the following:
 
 1. Encryptors: To bypass AVs
 2. Obfuscators: To bypass AVs
