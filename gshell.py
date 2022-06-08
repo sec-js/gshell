@@ -5,7 +5,7 @@ Author: nozerobit
 Twitter: @nozerobit
 
 Description:
-GShell is program to assits penetration testers by generating bind/reverse shells
+GShell is a program to assist penetration testers by generating bind/reverse shells
 It also provides them easy access to the bind_shells and reverse_shells markdown files
 This allows them to write their own bind/reverse shells with ease using code blocks
 """
@@ -331,7 +331,7 @@ Before: Verify for defensive mechanism and devices such as:
     - For example, if you find that port 443 is open but you try to establish a connection on port 9993 and you don't get a connection back,
         then most likely a software/host firewall is blocking it. Therefore, always try ports that are externally open first.
 7. Tip: When a reverse shell fails try to encode it to bypass potential filters.
-8. Tip: When a bind shell fails, verify that there are no middle devices such as IDS/IPS, hardware/software firewall, or system rules that avoids a ports from being in the listening state.
+8. Tip: When a bind shell fails, verify that there are no middle devices such as IDS/IPS, hardware/software firewall, or system rules that avoid ports from being in the listening state.
 9. Tip: When there's a black list and a white list. Enumerate the black list first and then the white list.
     - After taking notes of the allowed words or characters (white list), try to manually build a command or code. 
 10. Tip: If there's an AV/EDR then we should encode, encrypt, and overall try to obfuscate the command/code so that's not detected.

