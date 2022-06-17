@@ -199,7 +199,7 @@ def generate_shells(payload, ip, port, block, language, encoding):
                 print(magenta + "[!] Warning: If the code contains multiple lines, decode each line one-by-one.", file=stream)
                 encoders.base64_encode(cmd)
             else:
-                print(magenta + "[!] Warning: If the code contains multiple lines, decode each line one-by-one.", file=stream)
+                print(red + "[-] Error: The answer must be either Windows or Nix", file=stream)
                 exit(0)
         elif encoding[2] is True:
             print(blue + "[+] Adding base32 Encoding", file=stream)
@@ -375,7 +375,7 @@ Before: Verify for defensive mechanism and devices such as:
         if shell_type is not None:
             print(green + "[+] Shell type is valid", file=stream)
         else:
-            print(green + "[-] Shell type doesn't exists", file=stream)
+            print(red + "[-] Shell type doesn't exists", file=stream)
             exit(1)
 
     if bind is True:
