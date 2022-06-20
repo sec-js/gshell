@@ -1,1 +1,0 @@
-# For shellcode runners for C#, C++, and others.

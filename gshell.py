@@ -58,9 +58,13 @@ magenta = Style.BRIGHT + Fore.MAGENTA
 # For local regex
 sbind_shells = open(sys.path[0] + '/shells/' + 'bind_shells.md')
 sreverse_shells = open(sys.path[0] + '/shells/' + 'reverse_shells.md')
+shollowing_snippets = open(sys.path[0] + '/snippets/' + 'process-hollowing.md')
+sinjectors_snippets = open(sys.path[0] + '/snippets/' + 'process-hollowing.md')
 # For markdown code extractions
 bind_shells = [sys.path[0] + '/shells/' + 'bind_shells.md']
 reverse_shells = [sys.path[0] + '/shells/' + 'reverse_shells.md']
+hollowing_snippets = [sys.path[0] + '/snippets/' + 'process-hollowing.md']
+injectors_snippets = [sys.path[0] + '/snippets/' + 'process-hollowing.md']
 
 
 def handler(signum, frame):
@@ -128,26 +132,50 @@ def list_shells():
         for line in set(sreverse_shells):
             for match in re.finditer(pattern, line):
                 print('- ' '%s' % (match.group().replace('`','')))
+
+        print(green + "[+] These are the available process hollowing code snippets", file=stream)
+        for line in set(shollowing_snippets):
+            for match in re.finditer(pattern, line):
+                print('- ' '%s' % (match.group().replace('`','')))
+        
+        print(green + "[+] These are the available process injectors code snippets", file=stream)
+        for line in set(sinjectors_snippets):
+            for match in re.finditer(pattern, line):
+                print('- ' '%s' % (match.group().replace('`','')))
     except Exception as e: 
         print(e)
         exit(1)
 
-def find_shell(shell_type):
+def find_shell(shell_type, bind, reverse, hollowing, injectors):
     """
     Finds and returns the shell type
     """
 
     pattern = re.compile(r'^```'+shell_type+r"$")
 
-    for line in sbind_shells:
-        for match in re.finditer(pattern, line):
-            #name = print('%s' % (match.group().replace('`','')))
-            return shell_type
-            
-    for line in sreverse_shells:
-        for match in re.finditer(pattern, line):
-            #name = print('%s' % (match.group().replace('`','')))
-            return shell_type
+    if bind is True:
+        for line in sbind_shells:
+            for match in re.finditer(pattern, line):
+                #name = print('%s' % (match.group().replace('`','')))
+                return shell_type
+    
+    if reverse is True:
+        for line in sreverse_shells:
+            for match in re.finditer(pattern, line):
+                #name = print('%s' % (match.group().replace('`','')))
+                return shell_type
+
+    if hollowing is True:
+        for line in shollowing_snippets:
+            for match in re.finditer(pattern, line):
+                #name = print('%s' % (match.group().replace('`','')))
+                return shell_type
+
+    if injectors is True:       
+        for line in sinjectors_snippets:
+            for match in re.finditer(pattern, line):
+                #name = print('%s' % (match.group().replace('`','')))
+                return shell_type
 
 def generate_shells(payload, ip, port, block, language, encoding):
     """
@@ -168,6 +196,11 @@ def generate_shells(payload, ip, port, block, language, encoding):
     base16_encoding]
     """
 
+    if language != "":
+        print(green + "[+] Generating "+language+" shells")
+    else:
+        print(green + "[+] Generating shells")
+
     for md_filename in payload:
         code_blocks = parse.parse_file(
             md_filename,
@@ -176,13 +209,11 @@ def generate_shells(payload, ip, port, block, language, encoding):
             parse_blocks = block,
             language = language
         )
-        if language != "":
-            print(green + "[+] Generating "+language+" shells")
-        else:
-            print(green + "[+] Generating shells")
 
+        # Print a separator between code blocks
         # Separate each code block with a new line hence ("\n\n")
-        cmd = ("\n\n".join([cb.code for cb in code_blocks]))
+        cmd = ("\n\n----------------NEXT CODE BLOCK----------------\n\n"
+        .join([cb.code for cb in code_blocks]))
 
         if encoding[0] is True:
             print(blue + "[+] Adding URL Encoding", file=stream)
@@ -212,6 +243,27 @@ def generate_shells(payload, ip, port, block, language, encoding):
         else:
             print(cmd)
 
+def print_snippets(snippets, ip, port, block, language):
+    """
+    Print code snippets
+
+    Replace $ip and $port placeholders
+    """
+
+    for md_filename in snippets:
+        code_blocks = parse.parse_file(
+            md_filename,
+            ip = ip,
+            port = port,
+            parse_blocks = block,
+            language = language
+        )
+        # Separate each code block with a new line hence ("\n\n")
+        cmd = ("\n\n----------------NEXT CODE BLOCK----------------\n\n"
+        .join([cb.code for cb in code_blocks]))
+        print(cmd)
+
+
 def main():
     """
     Parse the arguments and decides the program flow
@@ -233,7 +285,7 @@ def main():
 
 Generate bind shells and/or reverse shells with style
 
-            Version: 1.0
+            Version: 1.1
             Author: nozerobit
             Twitter: @nozerobit
 """, 
@@ -241,13 +293,19 @@ Generate bind shells and/or reverse shells with style
     parser._optionals.title = "Options"
     parser.add_argument('-i', '--ip', metavar="<IP ADDRESS>", action='store', dest='ip', type=str, help='Specify the IP address')
     parser.add_argument('-p', '--port', metavar="<PORT NUMBER>", action='store', dest='port', type=int, help='Specify the port number')
-    parser.add_argument('-s', '--shell',  metavar="<SHELL TYPE>", default="", dest='shell', type=str, help='Specify a shell type (python, nc, bash, etc)')
+    parser.add_argument('-s', '--shell',  metavar="<SHELL TYPE>", action='store', default='', dest='shell', type=str, help='Specify a shell type (python, nc, bash, etc)')
 
     # Payload Type
     payload_arg = parser.add_argument_group('Payload Types')
     payload_arg.add_argument("-r", "--reverse", action="store_true", dest='reverse',
                              help="Victim communicates back to the attacking machine")
     payload_arg.add_argument("-b", "--bind", action="store_true", dest='bind', help="Open up a listener on the victim machine")
+
+    # Snippets Type
+    snippets_arg = parser.add_argument_group('Snippets Types')
+    snippets_arg.add_argument("--hollowing", action="store_true", dest='hollowing',
+                             help="Print process hollowing code snippets")
+    snippets_arg.add_argument("--injector", action="store_true", dest='injector', help="Print process injector code snippets")
     
     # Encodings Options
     encodings = parser.add_argument_group('Encoding Options')
@@ -286,6 +344,9 @@ Generate bind shells and/or reverse shells with style
     # Payloads
     reverse = args.reverse
     bind = args.bind
+    # Code Snippets
+    hollowing = args.hollowing
+    injectors = args.injector
     # Encodings
     base64_encoding = args.base64
     base32_encoding = args.base32
@@ -349,9 +410,11 @@ Before: Verify for defensive mechanism and devices such as:
         print(yellow + "[!] Please specify an IP address and a port number, use the option -h,--help", file=stream)
         exit(1)
 
+    '''
     if bind is False and reverse is False:
         print(red + "[-] Please use either --bind or --reverse options", file=stream)
         exit(1)
+    '''
 
     if bind is True and reverse is True:
         print(red + "[-] Can't use both --bind and --reverse options", file=stream)
@@ -369,10 +432,18 @@ Before: Verify for defensive mechanism and devices such as:
         print(red + "[-] Can't use multiple encodings at the same time", file=stream)
         exit(1)
 
-    if shell is not None:
-        shell_type = find_shell(shell)
+    if ((bind==True and hollowing==True) or (bind==True and injectors==True)):
+        print(red + "[-] Can't use a payload type and a code snippet type at the same time", file=stream)
+        exit(1)
+
+    if ((reverse==True and hollowing==True) or (reverse==True and injectors==True)):
+        print(red + "[-] Can't use a payload type and a code snippet type at the same time", file=stream)
+        exit(1)
+
+    if shell is not None and shell != "":
+        shell_type = find_shell(shell, bind, reverse, hollowing, injectors)
         #print(f'{shell_type}')
-        if shell_type is not None:
+        if shell_type is not None and shell_type != "":
             print(green + "[+] Shell type is valid", file=stream)
         else:
             print(red + "[-] Shell type doesn't exists", file=stream)
@@ -385,6 +456,14 @@ Before: Verify for defensive mechanism and devices such as:
     if reverse is True:
         print(green + "[+] Preparing reverse shells", file=stream)
         generate_shells(reverse_shells, ip, port, block, shell, all_encodings)
+
+    if hollowing is True:
+        print(green + "[+] Preparing process hollowing code snippets", file=stream)
+        print_snippets(hollowing_snippets, ip, port, block, shell)
+    
+    if injectors is True:
+        print(green + "[+] Preparing process injectors code snippets", file=stream)
+        print_snippets(injectors_snippets, ip, port, block, shell)
 
 if __name__ == "__main__":
     main()
