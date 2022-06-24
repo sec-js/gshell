@@ -11,12 +11,12 @@ This allows them to write their own bind/reverse shells with ease using code blo
 """
 
 from evasion import encoders
-from mdextract import CodeBlock
+#from mdextract import CodeBlock
 from mdextract import parse
 from argparse import RawTextHelpFormatter
 from colorama import Fore, Style, init, AnsiToWin32
 from pprint import pprint
-import os
+#import os
 import sys
 import argparse
 import ipaddress
@@ -215,33 +215,33 @@ def generate_shells(payload, ip, port, block, language, encoding):
         cmd = ("\n\n----------------NEXT CODE BLOCK----------------\n\n"
         .join([cb.code for cb in code_blocks]))
 
-        cmd_encode = ("\n".join([cb.code for cb in code_blocks]))
+        #cmd_encode = ("\n".join([cb.code for cb in code_blocks]))
 
         if encoding[0] is True:
             print(blue + "[+] Adding URL Encoding", file=stream)
-            encoders.url_encode(cmd_encode)
+            encoders.url_encode(cmd)
         elif encoding[1] is True:
             print(cyan + "[+] Answer with: Windows or Nix", file=stream)
             question = input("[!] Do you want to base64 encode for Windows or Nix? ")
             if question == ("Windows"):
                 print(blue + "[+] Adding Windows UTF-16LE base64 Encoding", file=stream)
                 print(magenta + "[!] Warning: If the code contains multiple lines, decode each line one-by-one.", file=stream)
-                encoders.windows_base64(cmd_encode)
+                encoders.windows_base64(cmd)
             elif question == ("Nix"):
                 print(blue + "[+] Adding Nix base64 Encoding", file=stream)
                 print(magenta + "[!] Warning: If the code contains multiple lines, decode each line one-by-one.", file=stream)
-                encoders.base64_encode(cmd_encode)
+                encoders.base64_encode(cmd)
             else:
                 print(red + "[-] Error: The answer must be either Windows or Nix", file=stream)
                 exit(0)
         elif encoding[2] is True:
             print(blue + "[+] Adding base32 Encoding", file=stream)
             print(magenta + "[!] Warning: If the code contains multiple lines, decode each line one-by-one.", file=stream)
-            encoders.base32_encode(cmd_encode)
+            encoders.base32_encode(cmd)
         elif encoding[3] is True:
             print(blue + "[+] Adding base16 Encoding", file=stream) 
             print(magenta + "[!] Warning: If the code contains multiple lines, decode each line one-by-one.", file=stream)
-            encoders.base16_encode(cmd_encode)
+            encoders.base16_encode(cmd)
         else:
             print(cmd)
 
