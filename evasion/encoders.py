@@ -2,7 +2,7 @@ from urllib.parse import quote_plus
 from binascii import hexlify
 import base64
 import io
-import re
+#import re
 
 sep = "\n----------------NEXT CODE BLOCK----------------\n"
 sec = "----------------NEXT CODE BLOCK----------------\n"

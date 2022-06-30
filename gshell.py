@@ -10,6 +10,7 @@ It also provides them easy access to the bind_shells and reverse_shells markdown
 This allows them to write their own bind/reverse shells with ease using code blocks
 """
 
+from shellcodes import shellcodes
 from evasion import encoders
 #from mdextract import CodeBlock
 from mdextract import parse
@@ -265,17 +266,31 @@ def print_snippets(snippets, ip, port, block, language):
         .join([cb.code for cb in code_blocks]))
         print(cmd)
 
+def generate_shellcode(ip, port, shellcode_os, shellcode_payload):
+    """
+    Generate the shellcodes
+    """
+
+    if shellcode_os[0] is True:
+        print(green + "[+] Generating Windows shellcodes", file=stream)
+        if shellcode_payload[0] is True:
+            shellcodes.generate_bind_shell.windows_bind_tcp(ip, port)
+        if shellcode_payload[1] is True:
+            shellcodes.generate_reverse_shell.windows_reverse_tcp(ip, port)
+    if shellcode_os[1] is True:
+        print(green + "[+] Generating Linux shellcodes", file=stream)
+        if shellcode_payload[0] is True:
+            shellcodes.generate_bind_shell.linux_bind_tcp(ip, port)
+        if shellcode_payload[1] is True:
+            shellcodes.generate_reverse_shell.linux_reverse_tcp(ip, port)
 
 def main():
     """
     Parse the arguments and decides the program flow
 
     This is also the help menu
-
-    store_true = Boolean ( True (used) or False (not used) )
-
-    Generate bind shells and/or reverse shells.
     """
+
     parser = argparse.ArgumentParser(description=f"""
 
  ██████  ███████ ██   ██ ███████ ██      ██      
@@ -285,9 +300,9 @@ def main():
  ██████  ███████ ██   ██ ███████ ███████ ███████ 
 
 
-Generate bind shells and/or reverse shells with style
+Generate shellcodes, bind shells and/or reverse shells with style
 
-            Version: 1.1
+            Version: 1.2
             Author: nozerobit
             Twitter: @nozerobit
 """, 
@@ -299,15 +314,21 @@ Generate bind shells and/or reverse shells with style
 
     # Payload Type
     payload_arg = parser.add_argument_group('Payload Types')
-    payload_arg.add_argument("-r", "--reverse", action="store_true", dest='reverse',
-                             help="Victim communicates back to the attacking machine")
+    payload_arg.add_argument("-r", "--reverse", action="store_true", dest='reverse', help="Victim communicates back to the attacking machine")
     payload_arg.add_argument("-b", "--bind", action="store_true", dest='bind', help="Open up a listener on the victim machine")
 
     # Snippets Type
     snippets_arg = parser.add_argument_group('Snippets Types')
-    snippets_arg.add_argument("--hollowing", action="store_true", dest='hollowing',
-                             help="Print process hollowing code snippets")
+    snippets_arg.add_argument("--hollowing", action="store_true", dest='hollowing', help="Print process hollowing code snippets")
     snippets_arg.add_argument("--injector", action="store_true", dest='injector', help="Print process injector code snippets")
+
+    # Shellcodes
+    shellcode_arg = parser.add_argument_group('Shellcode Required Options')
+    shellcode_arg.add_argument("--shellcode", action="store_true", required=False, help="Generate shellcodes, requires --srev or --sbind and --windows or --linux")
+    shellcode_arg.add_argument("--srev", action="store_true", dest='srev', help="Reverse shell shellcode")
+    shellcode_arg.add_argument("--sbind", action="store_true", dest='sbind', help="Bind shell shellcode")
+    shellcode_arg.add_argument("--windows", action='store_true', dest='windows', help="Windows shellcode")
+    shellcode_arg.add_argument("--linux", action='store_true', dest='linux', help="Linux shellcode")
     
     # Encodings Options
     encodings = parser.add_argument_group('Encoding Options')
@@ -349,6 +370,12 @@ Generate bind shells and/or reverse shells with style
     # Code Snippets
     hollowing = args.hollowing
     injectors = args.injector
+    # Shellcodes
+    shellcode = args.shellcode
+    shellcode_windows = args.windows
+    shellcode_linux = args.linux
+    shellcode_reverse = args.srev
+    shellcode_bind = args.sbind
     # Encodings
     base64_encoding = args.base64
     base32_encoding = args.base32
@@ -370,6 +397,11 @@ Generate bind shells and/or reverse shells with style
     base64_encoding,
     base32_encoding,
     base16_encoding]
+
+    # Shellcode OS List
+    shellcode_os = [shellcode_windows, shellcode_linux]
+    # Shellcode Payload List
+    shellcode_payload = [shellcode_bind, shellcode_reverse]
 
     #if debug:
     #    pprint(args)
@@ -441,6 +473,14 @@ Before: Verify for defensive mechanism and devices such as:
     if ((reverse==True and hollowing==True) or (reverse==True and injectors==True)):
         print(red + "[-] Can't use a payload type and a code snippet type at the same time", file=stream)
         exit(1)
+    
+    if ((bind==True and shellcode==True) or (bind==True and shellcode==True)):
+        print(red + "[-] Can't use a payload type and a shellcode type at the same time", file=stream)
+        exit(1)
+
+    if ((reverse==True and shellcode==True) or (reverse==True and shellcode==True)):
+        print(red + "[-] Can't use a payload type and a shellcode type at the same time", file=stream)
+        exit(1)
 
     if shell is not None and shell != "":
         shell_type = find_shell(shell, bind, reverse, hollowing, injectors)
@@ -466,6 +506,35 @@ Before: Verify for defensive mechanism and devices such as:
     if injectors is True:
         print(green + "[+] Preparing process injectors code snippets", file=stream)
         print_snippets(injectors_snippets, ip, port, block, shell)
+
+    if shellcode is True and shellcode_bind is False and shellcode_reverse is False:
+        print(red + "[-] Must specify a shellcode payload, use --sbind or --srev")
+        exit(1)
+
+    if shellcode is True:     
+        if shellcode_bind is True and shellcode_reverse is True:
+            print(red + "[-] Can't use both shellcode types at the same time", file=stream)
+            exit(1)
+
+        if shellcode_linux is True and shellcode_windows is True:
+            print(red + "[-] Can't use both windows shellcodes and linux shellcodes at the same time", file=stream)
+            exit(1)
+
+        if ((shellcode_bind==True and shellcode_linux==False) or (shellcode_bind==True and shellcode_windows==False)):
+            print(yellow + "[!] Please specify the target OS using --windows or --linux", file=stream)
+            exit(1)
+
+        if ((shellcode_reverse==True and shellcode_linux==False) or (shellcode_reverse==True and shellcode_windows==False)):
+            print(yellow + "[!] Please specify the target OS using --windows or --linux", file=stream)
+            exit(1)
+
+        if shellcode_bind is True:
+            print(green + "[+] Generating bind shell shellcodes", file=stream)
+            generate_shellcode(ip, port, shellcode_os, shellcode_payload)
+
+        if shellcode_reverse is True:
+            print(green + "[+] Generating reverse shell shellcodes", file=stream)
+            generate_shellcode(ip, port, shellcode_os, shellcode_payload)
 
 if __name__ == "__main__":
     main()
