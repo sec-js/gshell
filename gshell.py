@@ -271,6 +271,15 @@ def generate_shellcode(ip, port, shellcode_os, shellcode_payload):
     Generate the shellcodes
     """
 
+    # Temporary Code
+    print(green + "[+] Generating Linux shellcodes", file=stream)
+    if shellcode_payload[0] is True:
+        shellcodes.generate_bind_shell.linux_bind_tcp(ip, port)
+    if shellcode_payload[1] is True:
+        shellcodes.generate_reverse_shell.linux_reverse_tcp(ip, port)
+
+    # Code for when I add the Windows Shellcode
+    '''
     if shellcode_os[0] is True:
         print(green + "[+] Generating Windows shellcodes", file=stream)
         if shellcode_payload[0] is True:
@@ -283,6 +292,7 @@ def generate_shellcode(ip, port, shellcode_os, shellcode_payload):
             shellcodes.generate_bind_shell.linux_bind_tcp(ip, port)
         if shellcode_payload[1] is True:
             shellcodes.generate_reverse_shell.linux_reverse_tcp(ip, port)
+    '''
 
 def main():
     """
@@ -327,7 +337,7 @@ Generate shellcodes, bind shells and/or reverse shells with style
     shellcode_arg.add_argument("--shellcode", action="store_true", required=False, help="Generate shellcodes, requires --srev or --sbind and --windows or --linux")
     shellcode_arg.add_argument("--srev", action="store_true", dest='srev', help="Reverse shell shellcode")
     shellcode_arg.add_argument("--sbind", action="store_true", dest='sbind', help="Bind shell shellcode")
-    shellcode_arg.add_argument("--windows", action='store_true', dest='windows', help="Windows shellcode")
+    #shellcode_arg.add_argument("--windows", action='store_true', dest='windows', help="Windows shellcode")
     shellcode_arg.add_argument("--linux", action='store_true', dest='linux', help="Linux shellcode")
     
     # Encodings Options
@@ -372,7 +382,7 @@ Generate shellcodes, bind shells and/or reverse shells with style
     injectors = args.injector
     # Shellcodes
     shellcode = args.shellcode
-    shellcode_windows = args.windows
+    #shellcode_windows = args.windows
     shellcode_linux = args.linux
     shellcode_reverse = args.srev
     shellcode_bind = args.sbind
@@ -399,7 +409,7 @@ Generate shellcodes, bind shells and/or reverse shells with style
     base16_encoding]
 
     # Shellcode OS List
-    shellcode_os = [shellcode_windows, shellcode_linux]
+    #shellcode_os = [shellcode_windows, shellcode_linux]
     # Shellcode Payload List
     shellcode_payload = [shellcode_bind, shellcode_reverse]
 
@@ -436,13 +446,6 @@ Before: Verify for defensive mechanism and devices such as:
     if shell_list is True:
         list_shells()
         exit(0)
-
-    if ip is not None and port is not None:
-        verify_ip(ip)
-        verify_port(port)
-    else:
-        print(yellow + "[!] Please specify an IP address and a port number, use the option -h,--help", file=stream)
-        exit(1)
 
     '''
     if bind is False and reverse is False:
@@ -492,20 +495,37 @@ Before: Verify for defensive mechanism and devices such as:
             exit(1)
 
     if bind is True:
+        if port is not None:
+            verify_port(port)
+        else:
+            print(yellow + "[!] Please specify a port number, use the option -h,--help", file=stream)
+            exit(1)
         print(green + "[+] Preparing bind shells", file=stream)
         generate_shells(bind_shells, ip, port, block, shell, all_encodings)
+        exit(0)
+
+    # The ones below these line require both IP and PORT
+    if ip is not None and port is not None:
+        verify_ip(ip)
+        verify_port(port)
+    else:
+        print(yellow + "[!] Please specify an IP address and a port number, use the option -h,--help", file=stream)
+        exit(1)
 
     if reverse is True:
         print(green + "[+] Preparing reverse shells", file=stream)
         generate_shells(reverse_shells, ip, port, block, shell, all_encodings)
+        exit(0)
 
     if hollowing is True:
         print(green + "[+] Preparing process hollowing code snippets", file=stream)
         print_snippets(hollowing_snippets, ip, port, block, shell)
+        exit(0)
     
     if injectors is True:
         print(green + "[+] Preparing process injectors code snippets", file=stream)
         print_snippets(injectors_snippets, ip, port, block, shell)
+        exit(0)
 
     if shellcode is True and shellcode_bind is False and shellcode_reverse is False:
         print(red + "[-] Must specify a shellcode payload, use --sbind or --srev")
@@ -516,6 +536,7 @@ Before: Verify for defensive mechanism and devices such as:
             print(red + "[-] Can't use both shellcode types at the same time", file=stream)
             exit(1)
 
+        '''
         if shellcode_linux is True and shellcode_windows is True:
             print(red + "[-] Can't use both windows shellcodes and linux shellcodes at the same time", file=stream)
             exit(1)
@@ -523,18 +544,21 @@ Before: Verify for defensive mechanism and devices such as:
         if ((shellcode_bind==True and shellcode_linux==False) or (shellcode_bind==True and shellcode_windows==False)):
             print(yellow + "[!] Please specify the target OS using --windows or --linux", file=stream)
             exit(1)
+        '''
 
-        if ((shellcode_reverse==True and shellcode_linux==False) or (shellcode_reverse==True and shellcode_windows==False)):
-            print(yellow + "[!] Please specify the target OS using --windows or --linux", file=stream)
+        if ((shellcode_reverse==True and shellcode_linux==False) or (shellcode_bind==True and shellcode_linux==False)):
+            print(yellow + "[!] Please specify the target OS using using --linux", file=stream)
             exit(1)
-
+                
         if shellcode_bind is True:
             print(green + "[+] Generating bind shell shellcodes", file=stream)
-            generate_shellcode(ip, port, shellcode_os, shellcode_payload)
+            generate_shellcode(ip, port, shellcode_linux, shellcode_payload)
+            exit(0)
 
         if shellcode_reverse is True:
             print(green + "[+] Generating reverse shell shellcodes", file=stream)
-            generate_shellcode(ip, port, shellcode_os, shellcode_payload)
+            generate_shellcode(ip, port, shellcode_linux, shellcode_payload)
+            exit(0)
 
 if __name__ == "__main__":
     main()
