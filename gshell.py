@@ -334,7 +334,7 @@ Generate shellcodes, bind shells and/or reverse shells with style
 
     # Shellcodes
     shellcode_arg = parser.add_argument_group('Shellcode Required Options')
-    shellcode_arg.add_argument("--shellcode", action="store_true", required=False, help="Generate shellcodes, requires --srev or --sbind and --windows or --linux")
+    shellcode_arg.add_argument("--shellcode", action="store_true", required=False, help="Generate shellcodes, requires --srev or --sbind and --linux")
     shellcode_arg.add_argument("--srev", action="store_true", dest='srev', help="Reverse shell shellcode")
     shellcode_arg.add_argument("--sbind", action="store_true", dest='sbind', help="Bind shell shellcode")
     #shellcode_arg.add_argument("--windows", action='store_true', dest='windows', help="Windows shellcode")
